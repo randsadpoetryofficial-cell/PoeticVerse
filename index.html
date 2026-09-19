@@ -3,138 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PoeticVerse - Aesthetic Urdu Poetry Generator</title>
-    <!-- html2canvas library image save karne ke liye -->
+    <title>PoeticVerse - Aesthetic Poetry Card Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gulzar&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            background-color: #0f0f0f;
+            background: #0d0f12;
             color: #ffffff;
-            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px 0;
+            padding: 20px 10px;
         }
-        .card {
-            background: #1a1a1a;
-            padding: 25px;
-            border-radius: 15px;
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(22, 26, 33, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             text-align: center;
-            border: 1px solid #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            max-width: 350px;
-            width: 90%;
         }
+
         h1 {
-            color: #e50914;
-            font-size: 24px;
-            margin-bottom: 5px;
+            color: #ff3344;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 10px rgba(255, 51, 68, 0.4);
         }
-        p {
-            color: #bbb;
+
+        p.subtitle {
+            color: #8a94a6;
             font-size: 13px;
-            margin-top: 0;
+            margin-bottom: 20px;
         }
+
         .input-group {
-            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
-        input, textarea {
-            width: 88%;
-            padding: 10px;
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
-            border: 1px solid #444;
-            background: #252525;
             color: #fff;
-            text-align: center;
             font-size: 14px;
             outline: none;
-            margin-bottom: 8px;
-            font-family: inherit;
+            transition: all 0.3s ease;
         }
-        textarea {
-            height: 60px;
-            resize: none;
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #ff3344;
+            box-shadow: 0 0 8px rgba(255, 51, 68, 0.3);
         }
-        button {
-            background: #e50914;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-            width: 95%;
-        }
-        .download-btn {
-            background: #252525;
-            border: 1px solid #e50914;
+
+        option {
+            background: #161a21;
             color: #fff;
-            margin-top: 10px;
         }
-        .poetry-box {
-            margin: 20px 0 10px 0;
-            padding: 20px 15px;
-            background: #252525;
-            border-left: 3px solid #e50914;
-            font-size: 18px;
-            line-height: 1.8;
-            border-radius: 6px;
+
+        .preview-area {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
         }
-        .watermark {
-            font-size: 12px;
-            color: #888;
-            margin-top: 12px;
+
+        #poetryCard {
+            width: 100%;
+            min-height: 220px;
+            padding: 25px 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            transition: background 0.4s ease, border 0.4s ease;
+            overflow: hidden;
+        }
+
+        .theme-dark {
+            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ff3344;
+        }
+
+        .theme-crimson {
+            background: radial-gradient(circle, #2d0b10 0%, #0d0204 100%);
+            border: 1px solid rgba(255, 51, 68, 0.3);
+            box-shadow: 0 0 20px rgba(255, 51, 68, 0.2);
+        }
+
+        .theme-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .theme-gold {
+            background: linear-gradient(135deg, #1f1a0e 0%, #080705 100%);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-left: 4px solid #d4af37;
+        }
+
+        .poetry-text {
+            font-family: 'Gulzar', serif;
+            font-size: 22px;
+            line-height: 1.9;
+            color: #ffffff;
+            direction: rtl;
+            text-align: center;
+            margin-bottom: 15px;
+            word-break: break-word;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .card-watermark {
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
             font-style: italic;
+            text-transform: uppercase;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(90deg, #ff3344, #e60023);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>PoeticVerse</h1>
-        <p>Aapka Apna Personal Poetry Card Generator</p>
+<div class="container">
+    <h1>PoeticVerse</h1>
+    <p class="subtitle">Aapka Apna Personal Poetry Card Generator</p>
+
+    <div class="input-group">
+        <input type="text" id="userName" placeholder="Apna Naam Likhein..." oninput="updateCard()">
+        <textarea id="userPoetry" rows="3" placeholder="Apni Shayari Yahan Likhein..." oninput="updateCard()">بڑی وفادار ہیں تیری یادیں ❤️
+تو آئے نہ آئے، یہ ضرور آتی ہیں۔</textarea>
         
-        <div class="input-group">
-            <input type="text" id="userName" placeholder="Apna Naam Likhein...">
-            <textarea id="userPoetry" placeholder="Apni Shayari Likhein..."></textarea>
-            <button onclick="updateCard()">Card Generate Karein</button>
-        </div>
-
-        <div class="poetry-box" id="cardContainer">
-            <span id="poetryText">بڑی وفادار ہیں تیری یادیں... ❤️‍🩹<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔</span>
-            <div class="watermark" id="cardName">Created by @RANSADPOET</div>
-        </div>
-
-        <button class="download-btn" onclick="downloadCard()">Card Save Karein (PNG)</button>
+        <select id="themeSelect" onchange="changeTheme()">
+            <option value="theme-dark">Theme: Dark Velvet</option>
+            <option value="theme-crimson">Theme: Deep Crimson Glow</option>
+            <option value="theme-glass">Theme: Glassmorphism Midnight</option>
+            <option value="theme-gold">Theme: Royal Golden</option>
+        </select>
     </div>
 
-    <script>
-        function updateCard() {
-            var name = document.getElementById("userName").value;
-            var poetry = document.getElementById("userPoetry").value;
-            
-            if(poetry.trim() !== "") {
-                document.getElementById("poetryText").innerHTML = poetry.replace(/\n/g, "<br>");
-            }
-            if(name.trim() !== "") {
-                document.getElementById("cardName").innerText = "Created for " + name + " | @RANSADPOET";
-            }
+    <div class="preview-area">
+        <div id="poetryCard" class="theme-dark">
+            <div class="poetry-text" id="cardPoetryText">
+                بڑی وفادار ہیں تیری یادیں ❤️<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔
+            </div>
+            <div class="card-watermark" id="cardWatermark">
+                Created for @RANSADPOET | @RANSADPOET
+            </div>
+        </div>
+    </div>
+
+    <button class="btn" onclick="downloadCard()">Card Save Karein (PNG)</button>
+</div>
+
+<script>
+    function updateCard() {
+        const poetryInput = document.getElementById('userPoetry').value;
+        const nameInput = document.getElementById('userName').value.trim();
+        const cardText = document.getElementById('cardPoetryText');
+        const watermark = document.getElementById('cardWatermark');
+
+        if (poetryInput.trim() === "") {
+            cardText.innerHTML = "Apni Shayari Yahan Likhein...";
+        } else {
+            cardText.innerHTML = poetryInput.replace(/\n/g, '<br>');
         }
 
-        function downloadCard() {
-            var container = document.getElementById("cardContainer");
-            html2canvas(container).then(function(canvas) {
-                var link = document.createElement("a");
-                link.download = "PoeticVerse-Card.png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            });
+        if (nameInput === "") {
+            watermark.innerText = "Created for @RANSADPOET | @RANSADPOET";
+        } else {
+            watermark.innerText = "Created for " + nameInput + " | @RANSADPOET";
         }
-    </script>
+    }
+
+    function changeTheme() {
+        const theme = document.getElementById('themeSelect').value;
+        const card = document.getElementById('poetryCard');
+        card.className = theme;
+    }
+
+    function downloadCard() {
+        const card = document.getElementById('poetryCard');
+        html2canvas(card, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true
+        }).then(canvas => {
+            const image = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = image;
+            a.download = "PoeticVerse_Card.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+    }
+</script>
 
 </body>
-</html>
+                                                                         </html>
+                
