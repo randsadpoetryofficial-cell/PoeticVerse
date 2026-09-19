@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PoeticVerse - Aesthetic Urdu Poetry Generator</title>
+    <!-- html2canvas library image save karne ke liye -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            max-width: 350px;
+            width: 90%;
+        }
+        h1 {
+            color: #e50914;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        p {
+            color: #bbb;
+            font-size: 13px;
+            margin-top: 0;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input, textarea {
+            width: 88%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #252525;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 8px;
+            font-family: inherit;
+        }
+        textarea {
+            height: 60px;
+            resize: none;
+        }
+        button {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 95%;
+        }
+        .download-btn {
+            background: #252525;
+            border: 1px solid #e50914;
+            color: #fff;
+            margin-top: 10px;
+        }
+        .poetry-box {
+            margin: 20px 0 10px 0;
+            padding: 20px 15px;
+            background: #252525;
+            border-left: 3px solid #e50914;
+            font-size: 18px;
+            line-height: 1.8;
+            border-radius: 6px;
+        }
+        .watermark {
+            font-size: 12px;
+            color: #888;
+            margin-top: 12px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>PoeticVerse</h1>
+        <p>Aapka Apna Personal Poetry Card Generator</p>
+        
+        <div class="input-group">
+            <input type="text" id="userName" placeholder="Apna Naam Likhein...">
+            <textarea id="userPoetry" placeholder="Apni Shayari Likhein..."></textarea>
+            <button onclick="updateCard()">Card Generate Karein</button>
+        </div>
+
+        <div class="poetry-box" id="cardContainer">
+            <span id="poetryText">بڑی وفادار ہیں تیری یادیں... ❤️‍🩹<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔</span>
+            <div class="watermark" id="cardName">Created by @RANSADPOET</div>
+        </div>
+
+        <button class="download-btn" onclick="downloadCard()">Card Save Karein (PNG)</button>
+    </div>
+
+    <script>
+        function updateCard() {
+            var name = document.getElementById("userName").value;
+            var poetry = document.getElementById("userPoetry").value;
+            
+            if(poetry.trim() !== "") {
+                document.getElementById("poetryText").innerHTML = poetry.replace(/\n/g, "<br>");
+            }
+            if(name.trim() !== "") {
+                document.getElementById("cardName").innerText = "Created for " + name + " | @RANSADPOET";
+            }
+        }
+
+        function downloadCard() {
+            var container = document.getElementById("cardContainer");
+            html2canvas(container).then(function(canvas) {
+                var link = document.createElement("a");
+                link.download = "PoeticVerse-Card.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+
+</body>
+</html>
