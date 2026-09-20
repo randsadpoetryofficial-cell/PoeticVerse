@@ -3,103 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PoeticVerse - Aesthetic Poetry Card Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gulzar&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>PoeticVerse - Poetry Card Generator</title>
+    <!-- html2canvas for downloading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
-            background: #0d0f12;
+            background-color: #0d0f12;
             color: #ffffff;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             padding: 20px 10px;
+            min-height: 100vh;
         }
-
         .container {
             width: 100%;
-            max-width: 450px;
-            background: rgba(22, 26, 33, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
+            max-width: 420px;
+            background: #161a22;
+            padding: 20px;
             border-radius: 16px;
-            padding: 25px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
-
         h1 {
-            color: #ff3344;
+            color: #ff3355;
+            text-align: center;
+            margin-bottom: 5px;
             font-size: 26px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 10px rgba(255, 51, 68, 0.4);
         }
-
         p.subtitle {
-            color: #8a94a6;
+            text-align: center;
+            color: #8a99ad;
             font-size: 13px;
             margin-bottom: 20px;
         }
-
         .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-
+        label {
+            display: block;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-bottom: 5px;
+        }
         input, textarea, select {
             width: 100%;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            background: #212631;
+            border: 1px solid #323b4d;
             border-radius: 8px;
             color: #fff;
             font-size: 14px;
             outline: none;
-            transition: all 0.3s ease;
         }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: #ff3344;
-            box-shadow: 0 0 8px rgba(255, 51, 68, 0.3);
+        textarea {
+            resize: none;
+            height: 80px;
+            direction: rtl;
+            font-size: 16px;
         }
-
-        option {
-            background: #161a21;
-            color: #fff;
-        }
-
-        .preview-area {
+        
+        /* Card Preview Styles */
+        .preview-box {
             margin: 20px 0;
             display: flex;
             justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #000;
+            border-radius: 12px;
+            padding: 10px;
         }
 
-        #poetryCard {
+        #card {
             width: 100%;
-            min-height: 220px;
-            padding: 25px 20px;
             border-radius: 12px;
+            padding: 25px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
+            text-align: center;
             position: relative;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-            transition: background 0.4s ease, border 0.4s ease;
-            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
+
+        /* Sizes */
+        .size-9-16 { aspect-ratio: 9/16; min-height: 480px; }
+        .size-1-1  { aspect-ratio: 1/1; min-height: 320px; }
+        .size-16-9 { aspect-ratio: 16/9; min-height: 200px; }
+
+        .poetry-text {
+            font-size: 20px;
+            line-height: 1.8;
+            direction: rtl;
+            margin: auto 0;
+            word-break: break-word;
+            white-space: pre-line;
+        }
+
+        .watermark {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Themes */
+        .theme-dark-velvet {
+            background: linear-gradient(135deg, #140307, #2a0812);
+            color: #f0f0f0;
+            border: 1px solid #4a0e1e;
+        }
+        .theme-crimson-glow {
+            background: radial-gradient(circle, #3d000a 0%, #0f0003 100%);
+            color: #ffffff;
+            border: 1px solid #ff1a40;
+            box-shadow: 0 0 15px rgba(255, 26, 64, 0.3);
+        }
+        .theme-floral-night {
+            background: linear-gradient(180deg, #0b132b 0%, #1c2541 100%);
+            color: #e0e1dd;
+            border: 1px solid #48cae4;
+        }
+        .theme-golden-vintage {
+            background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
+            color: #fef08a;
+            border: 1px solid #ca8a04;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #ff0040, #ff3355);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 64, 0.4);
+        }
+        .btn-save:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PoeticVerse</h1>
+    <p class="subtitle">Aapka Apna Personal Poetry Card Generator</p>
+
+    <div class="input-group">
+        <label>Aapka Naam / Handle</label>
+        <input type="text" id="nameInput" value="HAMZAH | @RANSADPOET" placeholder="Apna Naam ya Handle Likhein...">
+    </div>
+
+    <div class="input-group">
+        <label>Select Pre-loaded Poetry</label>
+        <select id="poetrySelect" onchange="loadPresetPoetry()">
+            <option value="">-- Apni Marzi Ki Shayari Select Karein --</option>
+            <option value="بڑی وفادار ہیں تیری یادیں ❤️\nتو آئے نہ آئے، یہ ضرور آتی ہیں۔">Sad: Badi Wafadar Hain Teri Yaadein</option>
+            <option value="بہت دل دکھتا ہے تیرا یوں بدل جانا 💔\nہم نے تو ہر موڑ پر تجھے مانگا تھا!">Sad: Boht Dil Dukhta Hai</option>
+            <option value="ہر شخص بچھڑنے کا بہانہ ڈھونڈ رہا تھا 🥀\nہم نے خود کو ہٹا کر ان کی راہ آسان کر دی!">Sad: Har Shakhs Bichhadne Ka</option>
+            <option value="تمہاری سوچ سے زیادہ خوبصورت ہیں ہم ✨\nذرا اپنا نظریہ بدل کر تو دیکھو!">Attitude: Tumhari Soch Se Ziada</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Urdu Poetry Text</label>
+        <textarea id="poetryInput" placeholder="Yahan apni shayari likhein...">بڑی وفادار ہیں تیری یادیں ❤️
+تو آئے نہ آئے، یہ ضرور آتی ہیں۔</textarea>
+    </div>
+
+    <div class="input-group">
+        <label>Select Size (Aspect Ratio)</label>
+        <select id="sizeSelect" onchange="updateCard()">
+            <option value="size-1-1">1:1 Square (Status / Post)</option>
+            <option value="size-9-16">9:16 Vertical (TikTok / Reels / Shorts)</option>
+            <option value="size-16-9">16:9 Horizontal (Landscape)</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Select Theme</label>
+        <select id="themeSelect" onchange="updateCard()">
+            <option value="theme-dark-velvet">Dark Velvet</option>
+            <option value="theme-crimson-glow">Crimson Glow</option>
+            <option value="theme-floral-night">Floral Night</option>
+            <option value="theme-golden-vintage">Golden Vintage</option>
+        </select>
+    </div>
+
+    <!-- Card Preview -->
+    <div class="preview-box">
+        <div id="card" class="theme-dark-velvet size-1-1">
+            <div class="poetry-text" id="cardPoetry">بڑی وفادار ہیں تیری یادیں ❤️<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔</div>
+            <div class="watermark" id="cardWatermark">CREATED FOR HAMZAH | @RANSADPOET</div>
+        </div>
+    </div>
+
+    <button class="btn-save" onclick="downloadCard()">Card Save Karein (PNG)</button>
+</div>
+
+<script>
+    const nameInput = document.getElementById('nameInput');
+    const poetryInput = document.getElementById('poetryInput');
+    const poetrySelect = document.getElementById('poetrySelect');
+    const sizeSelect = document.getElementById('sizeSelect');
+    const themeSelect = document.getElementById('themeSelect');
+
+    const card = document.getElementById('card');
+    const cardPoetry = document.getElementById('cardPoetry');
+    const cardWatermark = document.getElementById('cardWatermark');
+
+    function updateCard() {
+        cardPoetry.innerText = poetryInput.value || 'Yahan Shayari Likhein...';
+        
+        let userText = nameInput.value.trim();
+        cardWatermark.innerText = userText ? `CREATED FOR ${userText}` : '';
+
+        card.className = '';
+        card.classList.add(themeSelect.value);
+        card.classList.add(sizeSelect.value);
+    }
+
+    function loadPresetPoetry() {
+        if (poetrySelect.value !== "") {
+            poetryInput.value = poetrySelect.value;
+            updateCard();
+        }
+    }
+
+    nameInput.addEventListener('input', updateCard);
+    poetryInput.addEventListener('input', updateCard);
+
+    function downloadCard() {
+        html2canvas(card, {
+            scale: 3,
+            backgroundColor: null
+        }).then(canvas => {
+            let link = document.createElement('a');
+            link.download = 'PoeticVerse_Card.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+
+    updateCard();
+</script>
+
+</body>
+</html>
 
         .theme-dark {
             background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
