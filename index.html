@@ -251,10 +251,16 @@
             scale: 3,
             backgroundColor: null
         }).then(canvas => {
-            let link = document.createElement('a');
-            link.download = 'PoeticVerse_Card.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            canvas.toBlob(blob => {
+                let url = URL.createObjectURL(blob);
+                let link = document.createElement('a');
+                link.download = 'PoeticVerse_Card.png';
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
         });
     }
 
@@ -262,149 +268,6 @@
 </script>
 
 </body>
-</html>
-
-        .theme-dark {
-            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #ff3344;
-        }
-
-        .theme-crimson {
-            background: radial-gradient(circle, #2d0b10 0%, #0d0204 100%);
-            border: 1px solid rgba(255, 51, 68, 0.3);
-            box-shadow: 0 0 20px rgba(255, 51, 68, 0.2);
-        }
-
-        .theme-glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .theme-gold {
-            background: linear-gradient(135deg, #1f1a0e 0%, #080705 100%);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-left: 4px solid #d4af37;
-        }
-
-        .poetry-text {
-            font-family: 'Gulzar', serif;
-            font-size: 22px;
-            line-height: 1.9;
-            color: #ffffff;
-            direction: rtl;
-            text-align: center;
-            margin-bottom: 15px;
-            word-break: break-word;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-        }
-
-        .card-watermark {
-            font-size: 11px;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 600;
-            font-style: italic;
-            text-transform: uppercase;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(90deg, #ff3344, #e60023);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>PoeticVerse</h1>
-    <p class="subtitle">Aapka Apna Personal Poetry Card Generator</p>
-
-    <div class="input-group">
-        <input type="text" id="userName" placeholder="Apna Naam Likhein..." oninput="updateCard()">
-        <textarea id="userPoetry" rows="3" placeholder="Apni Shayari Yahan Likhein..." oninput="updateCard()">بڑی وفادار ہیں تیری یادیں ❤️
-تو آئے نہ آئے، یہ ضرور آتی ہیں۔</textarea>
-        
-        <select id="themeSelect" onchange="changeTheme()">
-            <option value="theme-dark">Theme: Dark Velvet</option>
-            <option value="theme-crimson">Theme: Deep Crimson Glow</option>
-            <option value="theme-glass">Theme: Glassmorphism Midnight</option>
-            <option value="theme-gold">Theme: Royal Golden</option>
-        </select>
-    </div>
-
-    <div class="preview-area">
-        <div id="poetryCard" class="theme-dark">
-            <div class="poetry-text" id="cardPoetryText">
-                بڑی وفادار ہیں تیری یادیں ❤️<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔
-            </div>
-            <div class="card-watermark" id="cardWatermark">
-                Created for @RANSADPOET | @RANSADPOET
-            </div>
-        </div>
-    </div>
-
-    <button class="btn" onclick="downloadCard()">Card Save Karein (PNG)</button>
-</div>
-
-<script>
-    function updateCard() {
-        const poetryInput = document.getElementById('userPoetry').value;
-        const nameInput = document.getElementById('userName').value.trim();
-        const cardText = document.getElementById('cardPoetryText');
-        const watermark = document.getElementById('cardWatermark');
-
-        if (poetryInput.trim() === "") {
-            cardText.innerHTML = "Apni Shayari Yahan Likhein...";
-        } else {
-            cardText.innerHTML = poetryInput.replace(/\n/g, '<br>');
-        }
-
-        if (nameInput === "") {
-            watermark.innerText = "Created for @RANSADPOET | @RANSADPOET";
-        } else {
-            watermark.innerText = "Created for " + nameInput + " | @RANSADPOET";
-        }
-    }
-
-    function changeTheme() {
-        const theme = document.getElementById('themeSelect').value;
-        const card = document.getElementById('poetryCard');
-        card.className = theme;
-    }
-
-    function downloadCard() {
-        const card = document.getElementById('poetryCard');
-        html2canvas(card, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true
-        }).then(canvas => {
-            const image = canvas.toDataURL("image/png");
-            const a = document.createElement("a");
-            a.href = image;
-            a.download = "PoeticVerse_Card.png";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        });
-    }
-</script>
-
-</body>
-                                                                         </html>
+    </html>
+                
                 
