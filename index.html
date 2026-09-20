@@ -3,25 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PoeticVerse - Poetry Card Generator</title>
+    <title>PoeticVerse Pro - Ultra Poetry Card Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Gulzar&family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0f12; color: #ffffff; display: flex; justify-content: center; padding: 20px 10px; min-height: 100vh; }
-        .container { width: 100%; max-width: 420px; background: #161a22; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #ff3355; text-align: center; margin-bottom: 5px; font-size: 26px; }
-        p.subtitle { text-align: center; color: #8a99ad; font-size: 13px; margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 12px; color: #a0aec0; margin-bottom: 5px; }
-        input, textarea, select { width: 100%; padding: 12px; background: #212631; border: 1px solid #323b4d; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
-        textarea { resize: none; height: 90px; direction: rtl; font-size: 16px; line-height: 1.5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: #08090c; color: #ffffff; display: flex; justify-content: center; padding: 20px 10px; min-height: 100vh; }
+        .container { width: 100%; max-width: 450px; background: #12151c; padding: 22px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 1px solid #222736; }
+        h1 { color: #ff3355; text-align: center; margin-bottom: 4px; font-size: 28px; font-weight: 700; letter-spacing: 0.5px; }
+        p.subtitle { text-align: center; color: #8a99ad; font-size: 13px; margin-bottom: 22px; }
         
-        .preview-box { margin: 20px 0; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 12px; padding: 10px; width: 100%; overflow: hidden; }
+        .section-title { font-size: 13px; text-transform: uppercase; color: #ff3355; font-weight: 700; margin: 15px 0 10px 0; letter-spacing: 1px; border-bottom: 1px solid #222736; padding-bottom: 4px; }
+        .input-group { margin-bottom: 14px; }
+        label { display: block; font-size: 12px; color: #a0aec0; margin-bottom: 6px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 12px; background: #1a1f2c; border: 1px solid #2d3548; border-radius: 10px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus, select:focus { border-color: #ff3355; box-shadow: 0 0 8px rgba(255, 51, 85, 0.3); }
+        textarea { resize: none; height: 100px; direction: rtl; font-size: 18px; line-height: 1.6; font-family: 'Noto Nastaliq Urdu', serif; }
+        
+        .row-2 { display: flex; gap: 10px; }
+        .row-2 .input-group { flex: 1; }
+
+        .preview-box { margin: 20px 0; display: flex; justify-content: center; align-items: center; background: #050608; border-radius: 14px; padding: 12px; width: 100%; overflow: hidden; border: 1px dashed #323b4d; }
         
         #card { 
             width: 100%; 
-            border-radius: 12px; 
-            padding: 25px 20px; 
+            border-radius: 16px; 
+            padding: 30px 22px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
@@ -29,105 +36,212 @@
             text-align: center; 
             position: relative; 
             box-sizing: border-box;
+            transition: all 0.3s ease;
         }
 
-        .size-9-16 { aspect-ratio: 9/16; min-height: 450px; }
-        .size-1-1  { aspect-ratio: 1/1; min-height: 320px; }
-        .size-16-9 { aspect-ratio: 16/9; min-height: 200px; }
+        .size-9-16 { aspect-ratio: 9/16; min-height: 480px; }
+        .size-1-1  { aspect-ratio: 1/1; min-height: 340px; }
+        .size-16-9 { aspect-ratio: 16/9; min-height: 220px; }
 
-        .poetry-text { font-size: 20px; line-height: 1.8; direction: rtl; margin: auto 0; word-break: break-word; white-space: pre-line; width: 100%; }
-        .watermark { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.8; margin-top: 15px; font-weight: 600; width: 100%; }
+        .poetry-text { font-size: 22px; line-height: 1.9; direction: rtl; margin: auto 0; word-break: break-word; white-space: pre-line; width: 100%; }
+        .watermark { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; margin-top: 18px; font-weight: 700; width: 100%; font-family: 'Poppins', sans-serif; }
 
-        .theme-dark-velvet { background: linear-gradient(135deg, #140307, #2a0812); color: #f0f0f0; border: 1px solid #4a0e1e; }
-        .theme-crimson-glow { background: radial-gradient(circle, #3d000a 0%, #0f0003 100%); color: #ffffff; border: #ff1a40 solid 1px; box-shadow: 0 0 15px rgba(255, 26, 64, 0.3); }
-        .theme-floral-night { background: linear-gradient(180deg, #0b132b 0%, #1c2541 100%); color: #e0e1dd; border: #48cae4 solid 1px; }
-        .theme-golden-vintage { background: linear-gradient(135deg, #1c1917 0%, #292524 100%); color: #fef08a; border: #ca8a04 solid 1px; }
+        /* --- MODERN UNLIMITED THEMES --- */
+        .theme-crimson-dark { background: linear-gradient(135deg, #1f0208, #050002); color: #ffffff; border: 1px solid #54081b; }
+        .theme-cyberpunk-neon { background: linear-gradient(135deg, #0f0c20, #060212); color: #00f0ff; border: 1px solid #00f0ff; box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.2); }
+        .theme-royal-gold { background: linear-gradient(135deg, #1a1403, #080601); color: #fce055; border: 1px solid #a37c0e; }
+        .theme-emerald-deep { background: linear-gradient(135deg, #021a12, #000805); color: #52e5b1; border: 1px solid #0d6e4b; }
+        .theme-midnight-blue { background: linear-gradient(135deg, #081026, #02050e); color: #a5c4ff; border: 1px solid #1a3673; }
+        .theme-sunset-glow { background: linear-gradient(135deg, #2b0b00, #0d0200); color: #ffaa75; border: 1px solid #782200; }
+        .theme-purple-haze { background: linear-gradient(135deg, #1b072b, #07010d); color: #e2a8ff; border: 1px solid #5a198a; }
+        .theme-minimal-black { background: #000000; color: #ffffff; border: 1px solid #333333; }
+        .theme-paper-vintage { background: #f4ecd8; color: #2b1e10; border: 1px solid #d4c5a9; }
 
-        .btn-save { width: 100%; padding: 14px; background: linear-gradient(90deg, #ff0040, #ff3355); border: none; border-radius: 8px; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 0, 64, 0.4); margin-top: 10px; }
+        /* --- FONTS --- */
+        .font-nastaliq { font-family: 'Noto Nastaliq Urdu', serif; }
+        .font-gulzar { font-family: 'Gulzar', serif; }
+        .font-amiri { font-family: 'Amiri', serif; }
+
+        .btn-save { width: 100%; padding: 15px; background: linear-gradient(90deg, #ff0040, #ff3355); border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 0, 64, 0.4); margin-top: 15px; transition: 0.2s; }
+        .btn-save:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>PoeticVerse</h1>
-    <p class="subtitle">Aapka Apna Personal Poetry Card Generator</p>
+    <h1>PoeticVerse Pro</h1>
+    <p class="subtitle">Next-Gen Ultra Poetry Card Generator</p>
 
+    <div class="section-title">1. Personal Info</div>
     <div class="input-group">
-        <label>Aapka Naam / Handle</label>
-        <input type="text" id="nameInput" value="HAMZAH | @RANSADPOET" placeholder="Apna Naam ya Handle Likhein...">
+        <label>Aapka Name / Social Handle</label>
+        <input type="text" id="nameInput" value="HAMZAH | @RANSADPOET" placeholder="Apna Name ya Handle Likhein...">
+    </div>
+
+    <div class="section-title">2. Choose Poetry Category</div>
+    <div class="row-2">
+        <div class="input-group">
+            <label>Category</label>
+            <select id="categorySelect" onchange="loadCategoryPoetry()">
+                <option value="sad">🥀 Sad & Pain</option>
+                <option value="attitude">🔥 Attitude & Pride</option>
+                <option value="love">❤️ Love & Romantic</option>
+                <option value="deep">🧠 Deep Life Thoughts</option>
+                <option value="islamic">✨ Islamic & Peace</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Select Poetry</label>
+            <select id="poetrySelect" onchange="applySelectedPoetry()">
+                <!-- Dynamic Loaded Options -->
+            </select>
+        </div>
     </div>
 
     <div class="input-group">
-        <label>Select Pre-loaded Poetry</label>
-        <select id="poetrySelect" onchange="loadPresetPoetry()">
-            <option value="">-- Apni Marzi Ki Shayari Select Karein --</option>
-            <option value="بڑی وفادار ہیں تیری یادیں ❤️&#10;تو آئے نہ آئے، یہ ضرور آتی ہیں۔">Sad: Badi Wafadar Hain Teri Yaadein</option>
-            <option value="بہت دل دکھتا ہے تیرا یوں بدل جانا 💔&#10;ہم نے تو ہر موڑ پر تجھے مانگا تھا!">Sad: Boht Dil Dukhta Hai</option>
-            <option value="ہر شخص بچھڑنے کا بہانہ ڈھونڈ رہا تھا 🥀&#10;ہم نے خود کو ہٹا کر ان کی راہ آسان کر دی!">Sad: Har Shakhs Bichhadne Ka</option>
-            <option value="تمہاری سوچ سے زیادہ خوبصورت ہیں ہم ✨&#10;ذرا اپنا نظریہ بدل کر تو دیکھو!">Attitude: Tumhari Soch Se Ziada</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label>Urdu Poetry Text</label>
+        <label>Urdu Poetry Text (Custom Edit Available)</label>
         <textarea id="poetryInput" placeholder="Yahan apni shayari likhein...">بڑی وفادار ہیں تیری یادیں ❤️
 تو آئے نہ آئے، یہ ضرور آتی ہیں۔</textarea>
     </div>
 
-    <div class="input-group">
-        <label>Select Size (Aspect Ratio)</label>
-        <select id="sizeSelect" onchange="updateCard()">
-            <option value="size-1-1">1:1 Square (Status / Post)</option>
-            <option value="size-9-16">9:16 Vertical (TikTok / Reels / Shorts)</option>
-            <option value="size-16-9">16:9 Horizontal (Landscape)</option>
-        </select>
+    <div class="section-title">3. Card Styling & Design</div>
+    <div class="row-2">
+        <div class="input-group">
+            <label>Select Theme</label>
+            <select id="themeSelect" onchange="updateCard()">
+                <option value="theme-crimson-dark">Crimson Dark</option>
+                <option value="theme-cyberpunk-neon">Cyberpunk Neon</option>
+                <option value="theme-royal-gold">Royal Gold</option>
+                <option value="theme-emerald-deep">Emerald Deep</option>
+                <option value="theme-midnight-blue">Midnight Blue</option>
+                <option value="theme-sunset-glow">Sunset Glow</option>
+                <option value="theme-purple-haze">Purple Haze</option>
+                <option value="theme-minimal-black">Minimal Black</option>
+                <option value="theme-paper-vintage">Paper Vintage</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Font Style</label>
+            <select id="fontSelect" onchange="updateCard()">
+                <option value="font-nastaliq">Nastaliq (Khas Urdu)</option>
+                <option value="font-gulzar">Gulzar (Bold Urdu)</option>
+                <option value="font-amiri">Amiri (Arabic/Urdu Style)</option>
+            </select>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>Select Theme</label>
-        <select id="themeSelect" onchange="updateCard()">
-            <option value="theme-dark-velvet">Dark Velvet</option>
-            <option value="theme-crimson-glow">Crimson Glow</option>
-            <option value="theme-floral-night">Floral Night</option>
-            <option value="theme-golden-vintage">Golden Vintage</option>
-        </select>
+    <div class="row-2">
+        <div class="input-group">
+            <label>Card Size (Aspect Ratio)</label>
+            <select id="sizeSelect" onchange="updateCard()">
+                <option value="size-1-1">1:1 Square (Status / Post)</option>
+                <option value="size-9-16">9:16 Vertical (TikTok / Reels)</option>
+                <option value="size-16-9">16:9 Landscape (YouTube)</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Text Align</label>
+            <select id="alignSelect" onchange="updateCard()">
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+                <option value="left">Left</option>
+            </select>
+        </div>
     </div>
 
     <div class="preview-box">
-        <div id="card" class="theme-dark-velvet size-1-1">
+        <div id="card" class="theme-crimson-dark size-1-1 font-nastaliq">
             <div class="poetry-text" id="cardPoetry">بڑی وفادار ہیں تیری یادیں ❤️<br>تو آئے نہ آئے، یہ ضرور آتی ہیں۔</div>
             <div class="watermark" id="cardWatermark">CREATED FOR HAMZAH | @RANSADPOET</div>
         </div>
     </div>
 
-    <button class="btn-save" id="downloadBtn" onclick="directDownload()">Card Download Karein</button>
+    <button class="btn-save" id="downloadBtn" onclick="directDownload()">✨ Download High Quality Card</button>
 </div>
 
 <script>
+    const poetryDatabase = {
+        sad: [
+            "بڑی وفادار ہیں تیری یادیں ❤️\nتو آئے نہ آئے، یہ ضرور آتی ہیں۔",
+            "بہت دل دکھتا ہے تیرا یوں بدل جانا 💔\nہم نے تو ہر موڑ پر تجھے مانگا تھا!",
+            "ہر شخص بچھڑنے کا بہانہ ڈھونڈ رہا تھا 🥀\nہم نے خود کو ہٹا کر ان کی راہ آسان کر دی!",
+            "اب کے یوں بچھڑے تو شاید کبھی خوابوں میں ملیں 💔\nجس طرح سوکھے ہوئے پھول کتابوں میں ملیں!",
+            "کھو دیا ہم نے اس کو بھی 🥀\nجسے پانے کی حد کر دی تھی!"
+        ],
+        attitude: [
+            "تمہاری سوچ سے زیادہ خوبصورت ہیں ہم ✨\nذرا اپنا نظریہ بدل کر تو دیکھو!",
+            "ہم اپنا معیار کبھی نہیں گرایا کرتے 😎\nسامنے والا چاہے جتنا بھی خاص ہو!",
+            "خاموشیاں بے وجہ نہیں ہوتیں 🔥\nکچھ درد آواز چھین لیتے ہیں!",
+            "ہم سے الجھنے سے پہلے سوچ لینا 🔥\nہم وہ ہیں jo خاموشی سے کھیل ختم کر دیتے ہیں!",
+            "تعلق ہو تو روح سے ہو ✨\nدل تو اکثر بھر ہی جایا کرتے ہیں!"
+        ],
+        love: [
+            "تیری سادگی ہی مجھے پسند ہے ❤️\nورنہ حسن کے بازار میں ہم بھی کم نہیں!",
+            "اک تیرا ساتھ ہی کافی ہے مجھ کو ✨\nدنیا میں اب کون میرا اپنا ہے!",
+            "تمہاری اک مسکراہٹ پر وار دوں زندگی ❤️\nکاش تم سمجھ سکتے محبت کا عالم!",
+            "ہماری خاموش محبت کا اتنا تو احترام کرو 💕\nکہ جب ہم دیکھیں، تم مسکرا دیا کرو!",
+            "تمہاری خوشبو سے مہکتی ہے میری زندگی ✨\nتم پاس ہو یا دور، دل میں بس تم ہی ہو!"
+        ],
+        deep: [
+            "زندگی کی حقیقت بس اتنی سی ہے 🧠\nانسان پل بھر میں خاموش ہو جاتا ہے!",
+            "وقت سب کچھ سکھا دیتا ہے ⏳\nلوگوں کے ساتھ جینا بھی، اور ان کے بغیر بھی!",
+            "سبھی چہرے یاد ہیں مجھے 🎭\nوقت آنے پر سب کا حساب ہوگا!",
+            "کچھ راستے اکیلے ہی طے کرنے پڑتے ہیں 🚶‍♂️\nنہ کوئی ساتھ ہوتا hai نہ کوئی ہمدرد!",
+            "سب کچھ بدل جاتا ہے وقت کے ساتھ ⌛\nبس کچھ یادیں باقی رہ جاتی ہیں!"
+        ],
+        islamic: [
+            "صبر رکھ، جو تیرا ہے وہ تجھے ہی ملے گا ✨\nاللہ کبھی کسی کی محنت ضائع نہیں کرتا!",
+            "اللہ سے مانگو، جو ناممکن کو بھی ممکن بنا دیتا ہے 🤲",
+            "دلوں کا سکون صرف اللہ کی یاد میں ہے ❤️",
+            "جب دل بھر جائے تو سجود میں رو لیا کرو 🤲\nوہ سب سنتا ہے اور سب جانتا ہے!",
+            "اللہ کی رضا میں راضی رہنا سیکھو ✨\nہر مشکل آسان ہو جائے گی!"
+        ]
+    };
+
     const nameInput = document.getElementById('nameInput');
     const poetryInput = document.getElementById('poetryInput');
+    const categorySelect = document.getElementById('categorySelect');
     const poetrySelect = document.getElementById('poetrySelect');
     const sizeSelect = document.getElementById('sizeSelect');
     const themeSelect = document.getElementById('themeSelect');
+    const fontSelect = document.getElementById('fontSelect');
+    const alignSelect = document.getElementById('alignSelect');
 
     const card = document.getElementById('card');
     const cardPoetry = document.getElementById('cardPoetry');
     const cardWatermark = document.getElementById('cardWatermark');
 
-    function updateCard() {
-        cardPoetry.innerText = poetryInput.value || 'Yahan Shayari Likhein...';
-        let userText = nameInput.value.trim();
-        cardWatermark.innerText = userText ? `CREATED FOR ${userText}` : '';
-        card.className = '';
-        card.classList.add(themeSelect.value);
-        card.classList.add(sizeSelect.value);
+    function loadCategoryPoetry() {
+        const cat = categorySelect.value;
+        const items = poetryDatabase[cat];
+        poetrySelect.innerHTML = '';
+        items.forEach((item, index) => {
+            let opt = document.createElement('option');
+            opt.value = item;
+            opt.innerText = item.split('\n')[0].substring(0, 30) + "...";
+            poetrySelect.appendChild(opt);
+        });
+        applySelectedPoetry();
     }
 
-    function loadPresetPoetry() {
-        if (poetrySelect.value !== "") {
+    function applySelectedPoetry() {
+        if (poetrySelect.value) {
             poetryInput.value = poetrySelect.value;
             updateCard();
         }
+    }
+
+    function updateCard() {
+        cardPoetry.innerText = poetryInput.value || 'Yahan Shayari Likhein...';
+        cardPoetry.style.textAlign = alignSelect.value;
+        
+        let userText = nameInput.value.trim();
+        cardWatermark.innerText = userText ? `CREATED FOR ${userText}` : '';
+        
+        card.className = '';
+        card.classList.add(themeSelect.value);
+        card.classList.add(sizeSelect.value);
+        card.classList.add(fontSelect.value);
     }
 
     nameInput.addEventListener('input', updateCard);
@@ -135,26 +249,26 @@
 
     function directDownload() {
         const btn = document.getElementById('downloadBtn');
-        btn.innerText = "Downloading...";
+        btn.innerText = "Downloading Card...";
         
         html2canvas(card, {
-            scale: 2,
+            scale: 3, // High Quality HD Render
             useCORS: true
         }).then(canvas => {
             let imgData = canvas.toDataURL("image/png");
             let link = document.createElement('a');
-            link.download = 'Poetry_Card.png';
+            link.download = 'Poetry_Card_HD.png';
             link.href = imgData;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            btn.innerText = "Card Download Karein";
+            btn.innerText = "✨ Download High Quality Card";
         });
     }
 
-    updateCard();
+    // Initial Load
+    loadCategoryPoetry();
 </script>
 
 </body>
-                </html>
-                
+</html>
