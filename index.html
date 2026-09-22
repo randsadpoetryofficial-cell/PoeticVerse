@@ -3,40 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PoeticVerse - Poetry Cards & Custom Studio</title>
+  <title>PoeticVerse - Automatic HD Card Studio</title>
+  <!-- HTML2Canvas Library for HD Downloading -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background-color: #050505; color: #fff; font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; }
-    .main-wrapper { width: 100%; max-width: 450px; }
+    .main-wrapper { width: 100%; max-width: 480px; }
     
     .header { text-align: center; margin-bottom: 20px; }
     .header h1 { color: #ff4757; font-size: 26px; }
     .header p { color: #aaa; font-size: 13px; margin-top: 4px; }
 
-    /* Card Generator Container */
-    .generator-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
-    .generator-box h2 { font-size: 18px; color: #ff4757; margin-bottom: 12px; }
+    /* Controls Container */
+    .controls-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+    .controls-box h3 { font-size: 15px; color: #ff4757; margin-bottom: 10px; }
 
-    /* Theme Options */
-    .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-    .theme-btn { padding: 10px 5px; font-size: 12px; background: #222; color: #fff; border: 1px solid #333; border-radius: 6px; cursor: pointer; text-align: center; transition: 0.2s; }
-    .theme-btn.active { border-color: #ff4757; background: #331115; color: #ff4757; font-weight: bold; }
+    /* Size Selector Grid */
+    .size-grid, .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+    .btn-option { padding: 10px 5px; font-size: 12px; background: #222; color: #fff; border: 1px solid #333; border-radius: 6px; cursor: pointer; text-align: center; transition: 0.2s; }
+    .btn-option.active { border-color: #ff4757; background: #331115; color: #ff4757; font-weight: bold; }
 
-    /* Card Preview Box */
-    .card-preview { width: 100%; height: 280px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; position: relative; background-size: cover; background-position: center; transition: background-image 0.4s ease-in-out; margin-bottom: 15px; border: 1px solid #444; }
-    .card-preview .overlay-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); border-radius: 10px; }
-    .card-text { position: relative; z-index: 2; font-size: 18px; line-height: 1.6; color: #fff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.9); direction: rtl; }
-    .card-watermark { position: relative; z-index: 2; font-size: 11px; color: #ff4757; margin-top: 20px; letter-spacing: 1px; font-weight: bold; }
+    /* Card Preview Box Wrapper */
+    .preview-container { width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+    
+    /* Dynamic Sized Card */
+    .card-preview { width: 100%; height: 420px; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 25px; position: relative; background-size: cover; background-position: center; border: 1px solid #444; overflow: hidden; transition: all 0.3s ease; }
+    .card-preview .overlay-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); border-radius: 12px; }
+    .card-text { position: relative; z-index: 2; font-size: 19px; line-height: 1.7; color: #fff; font-weight: bold; text-shadow: 0 2px 5px rgba(0,0,0,0.9); direction: rtl; }
+    .card-watermark { position: relative; z-index: 2; font-size: 11px; color: #ff4757; margin-top: 25px; letter-spacing: 1px; font-weight: bold; }
 
     /* Ready Poetry Library */
     .poetry-section { margin-bottom: 20px; }
     .poetry-section h3 { font-size: 16px; color: #fff; margin-bottom: 12px; }
-    .poetry-list { max-height: 350px; overflow-y: auto; padding-right: 5px; }
+    .poetry-list { max-height: 250px; overflow-y: auto; padding-right: 5px; }
     .poetry-item { background: #181818; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #ff4757; cursor: pointer; font-size: 14px; line-height: 1.5; color: #ddd; direction: rtl; text-align: right; }
     .poetry-item:hover { background: #222; color: #fff; }
-
-    /* Divider */
-    .divider { height: 1px; background: #222; margin: 25px 0; }
 
     /* Custom Order Form */
     .order-container { background: #111; padding: 18px; border-radius: 12px; border: 1px solid #333; }
@@ -46,7 +48,9 @@
     .payment-info p { margin: 3px 0; font-size: 13px; color: #fff; }
     .order-container input, .order-container textarea { width: 100%; padding: 11px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #333; background: #080808; color: #fff; font-size: 13px; outline: none; }
     .order-container input:focus, .order-container textarea:focus { border-color: #ff4757; }
-    .order-btn { width: 100%; padding: 12px; background: #ff4757; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; }
+    
+    .download-btn { width: 100%; padding: 14px; background: #ff4757; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
+    .download-btn:hover { background: #e03847; }
 
     .footer { text-align: center; margin-top: 25px; font-size: 12px; color: #555; }
   </style>
@@ -57,24 +61,33 @@
     
     <div class="header">
       <h1>PoeticVerse Studio</h1>
-      <p>Aesthetic Urdu Poetry & Status Cards</p>
+      <p>Instant Automatic HD Card Generator</p>
     </div>
 
-    <div class="generator-box">
-      <h2>🎨 Select Theme & Preview</h2>
-      
-      <div class="theme-grid">
-        <button class="theme-btn active" onclick="changeTheme(this, 'flowers')">🌸 Flowers</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'rain')">🌧️ Rain</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'mirror')">🪞 Mirror</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'candle')">🕯️ Candle</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'darkneon')">💡 Dark Neon</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'vintage')">📜 Vintage</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'midnight')">🌙 Midnight</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'dusk')">🌅 Dusk Glow</button>
-        <button class="theme-btn" onclick="changeTheme(this, 'minimal')">🖤 Minimal Black</button>
+    <!-- Controls Box -->
+    <div class="controls-box">
+      <!-- 1. Select Card Size -->
+      <h3>📐 1. Select Card Size / Format</h3>
+      <div class="size-grid">
+        <button class="btn-option active" onclick="changeSize(this, 'story')">📱 Story (9:16)</button>
+        <button class="btn-option" onclick="changeSize(this, 'square')">🔲 Square (1:1)</button>
+        <button class="btn-option" onclick="changeSize(this, 'banner')">🖼️ Banner (16:9)</button>
       </div>
 
+      <!-- 2. Select Background Theme -->
+      <h3>🎨 2. Select Background Theme</h3>
+      <div class="theme-grid">
+        <button class="btn-option active" onclick="changeTheme(this, 'flowers')">🌸 Flowers</button>
+        <button class="btn-option" onclick="changeTheme(this, 'rain')">🌧️ Rain</button>
+        <button class="btn-option" onclick="changeTheme(this, 'candle')">🕯️ Candle</button>
+        <button class="btn-option" onclick="changeTheme(this, 'darkneon')">💡 Dark Neon</button>
+        <button class="btn-option" onclick="changeTheme(this, 'vintage')">📜 Vintage</button>
+        <button class="btn-option" onclick="changeTheme(this, 'minimal')">🖤 Minimal</button>
+      </div>
+    </div>
+
+    <!-- Live Card Preview -->
+    <div class="preview-container">
       <div class="card-preview" id="cardBox" style="background-image: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=600');">
         <div class="overlay-bg"></div>
         <div class="card-text" id="cardPoetryText">
@@ -84,43 +97,37 @@
       </div>
     </div>
 
+    <!-- Poetry Library -->
     <div class="poetry-section">
-      <h3>📜 Poetry Collection (Tap Any Line)</h3>
-      
+      <h3>📜 Click Any Line To Insert</h3>
       <div class="poetry-list">
         <div class="poetry-item" onclick="setPoetry(this)">ایک مدّت سے میں نے نہیں دیکھا اسے۔۔۔<br>خدا جانے اب کتنا خوبصورت دکھتا ہو گا۔ 🖤</div>
         <div class="poetry-item" onclick="setPoetry(this)">یہ بارش، یہ موم بتیاں اور تیری یاد...<br>کوئی بتائے اتنے عذاب ایک ساتھ کون سہتا ہے! 🌧️🕯️</div>
-        <div class="poetry-item" onclick="setPoetry(this)">اس رات کی بارش میں بھی کچھ بات ہے...<br>تیری یادوں کا سلسلہ تھمتا ہی نہیں! 🥀</div>
         <div class="poetry-item" onclick="setPoetry(this)">تکلیف یہ نہیں کہ محبت ہوئی تھی اس سے۔۔۔<br>تکلیف تو یہ ہے کہ اب وہ شخص بھلایا نہیں جاتا۔ 💔</div>
         <div class="poetry-item" onclick="setPoetry(this)">ہم سے الجھنے سے پہلے سوچ لینا...<br>ہم خاموش ضرور ہیں مگر بے وقوف نہیں۔ 🔥</div>
-        <div class="poetry-item" onclick="setPoetry(this)">کبھی کبھی خاموشی بھی ایک جواب ہوتی ہے...<br>ہر بات کا لفظوں میں بتانا ضروری نہیں۔ 🌾</div>
-        <div class="poetry-item" onclick="setPoetry(this)">تجھ کو سوچوں تو شام ہوتی ہے...<br>تجھ کو بھولوں تو رات ڈھلتی ہے۔ ✨</div>
-        <div class="poetry-item" onclick="setPoetry(this)">ہم نے سیکھا ہے زمانے سے الگ رہنے کا ہنر...<br>یہاں ہر شخص بدلتا ہے ضرورت کے مطابق۔ 🕯️</div>
-        <div class="poetry-item" onclick="setPoetry(this)">کاش کوئی ایسا ہو ਜੋ دل کی بات بن کہے سمجھ جائے...<br>لفظوں سے تو سبھی فیصلے کر لیتے ہیں۔ 🌧️</div>
-        <div class="poetry-item" onclick="setPoetry(this)">اک تم ہی نہ مل سکے ورنہ...<br>ملنے والے تو مل کے بچھڑ بھی گئے۔ 🥀</div>
-        <div class="poetry-item" onclick="setPoetry(this)">کچھ درد ایسے ہوتے ہیں جنہیں جھیلا تو جا سکتا ہے...<br>مگر کسی سے بیاں نہیں کیا جا سکتا۔ 🖤</div>
-        <div class="poetry-item" onclick="setPoetry(this)">زندگی میں کچھ موڑ ایسے آتے ہیں...<br>جہاں انسان اپنے ہی جذبوں سے تھک جاتا ہے۔ ⏳</div>
       </div>
     </div>
 
-    <div class="divider"></div>
-
+    <!-- Download & Payment Section -->
     <div class="order-container">
-      <h2>✨ Custom Poetry Card Order Karein</h2>
-      <p>Apna naam, photo ya apni pasand ki poetry ke sath HD status card banwane ke liye details bhrein (Rs. 30 Per Card).</p>
+      <h2>⚡ Automatic Payment & Instant Download</h2>
+      <p>Niche diye gaye account par Rs. 30 bhejein aur details bharen taaki card download ho sake!</p>
       
       <div class="payment-info">
         <p><b>JazzCash / EasyPaisa Number:</b> 03125621770</p>
         <p><b>Account Name:</b> Hamzah</p>
       </div>
 
-      <form id="customCardForm" onsubmit="submitOrder(event)">
-        <input type="text" placeholder="Aapka Naam" required>
-        <input type="tel" placeholder="WhatsApp Number" required>
-        <textarea placeholder="Apni Pasand Ki Poetry Likhein..." rows="3" required></textarea>
-        <input type="text" placeholder="JazzCash/EasyPaisa Transaction ID (TID)" required>
+      <form id="orderForm" onsubmit="downloadCardAutomatically(event)">
+        <!-- Web3Forms Access Key Updated -->
+        <input type="hidden" name="access_key" value="ab1081db-419f-431f-99eb-dbe6b0cfd1fb">
+
+        <input type="text" name="User_Name" placeholder="Aapka Naam" required>
+        <input type="tel" name="WhatsApp_Number" placeholder="Aapka WhatsApp Number" required>
+        <input type="text" id="customPoetryInput" name="Poetry_Text" placeholder="Apni Pasand Ki Poetry Likhein..." oninput="updateLiveText(this.value)" required>
+        <input type="text" id="tidInput" name="Payment_TID" placeholder="JazzCash/EasyPaisa TID (Transaction ID)" required>
         
-        <button type="submit" class="order-btn">Order Submit Karein 🔥</button>
+        <button type="submit" class="download-btn" id="dlBtn">Unlock & Download HD Card 📥</button>
       </form>
     </div>
 
@@ -131,40 +138,102 @@
   </div>
 
   <script>
-    // Unsplash High-Quality Aesthetic Images for All Themes
     const themeImages = {
       flowers: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=600",
       rain: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=600",
-      mirror: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?q=80&w=600",
       candle: "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=600",
       darkneon: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600",
       vintage: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?q=80&w=600",
-      midnight: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?q=80&w=600",
-      dusk: "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?q=80&w=600",
       minimal: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600"
     };
+
+    function changeSize(element, sizeType) {
+      let cardBox = document.getElementById('cardBox');
+      let buttons = document.querySelectorAll('.size-grid .btn-option');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+
+      if (sizeType === 'story') {
+        cardBox.style.height = '420px';
+      } else if (sizeType === 'square') {
+        cardBox.style.height = '320px';
+      } else if (sizeType === 'banner') {
+        cardBox.style.height = '200px';
+      }
+    }
 
     function changeTheme(element, key) {
       if (themeImages[key]) {
         document.getElementById('cardBox').style.backgroundImage = `url('${themeImages[key]}')`;
-        let buttons = document.querySelectorAll('.theme-btn');
+        let buttons = document.querySelectorAll('.theme-grid .btn-option');
         buttons.forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
       }
     }
 
     function setPoetry(element) {
+      let text = element.innerText;
       document.getElementById('cardPoetryText').innerHTML = element.innerHTML;
+      document.getElementById('customPoetryInput').value = text;
     }
 
-    function submitOrder(e) {
+    function updateLiveText(val) {
+      if (val.trim() !== "") {
+        document.getElementById('cardPoetryText').innerText = val;
+      }
+    }
+
+    async function downloadCardAutomatically(e) {
       e.preventDefault();
-      alert("Shukriya! Aapka order submit ho gaya hai. Hum jald hi aapke WhatsApp par card bhej denge.");
-      document.getElementById("customCardForm").reset();
+      
+      let tid = document.getElementById('tidInput').value.trim();
+      if (tid === "") {
+        alert("Pehle Payment Transaction ID (TID) darj karein!");
+        return;
+      }
+
+      let btn = document.getElementById('dlBtn');
+      btn.innerText = "Processing Order...";
+      btn.disabled = true;
+
+      // Send Order Notification to Email
+      const formData = new FormData(document.getElementById('orderForm'));
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+      } catch (err) {
+        console.log("Email notification error:", err);
+      }
+
+      // Download HD Card Automatically
+      btn.innerText = "Generating HD Card...";
+      let cardElement = document.getElementById('cardBox');
+
+      html2canvas(cardElement, {
+        useCORS: true,
+        scale: 3
+      }).then(canvas => {
+        let image = canvas.toDataURL("image/png");
+        let link = document.createElement('a');
+        link.href = image;
+        link.download = `PoeticVerse_Card_${Date.now()}.png`;
+        link.click();
+
+        btn.innerText = "Downloaded & Order Recorded! ✅";
+        setTimeout(() => {
+          btn.innerText = "Unlock & Download HD Card 📥";
+          btn.disabled = false;
+        }, 3000);
+      }).catch(err => {
+        alert("Download failed! Please try again.");
+        btn.innerText = "Unlock & Download HD Card 📥";
+        btn.disabled = false;
+      });
     }
   </script>
 
 </body>
-    </html>
-    
-    
+        </html>
+          
